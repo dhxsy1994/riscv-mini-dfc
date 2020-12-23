@@ -26,6 +26,9 @@ object Opcode {
 
   val MEMORY = BigInt("0001111", 2).U(7.W)
   val SYSTEM = BigInt("1110011", 2).U(7.W)
+
+  //DFC extension instruction
+  val DFC    = BigInt("1110100", 2).U(7.W)
 }
 
 object Funct3 {
@@ -63,11 +66,17 @@ object Funct3 {
   val CSRRWI = BigInt("101", 2).U(3.W)
   val CSRRSI = BigInt("110", 2).U(3.W)
   val CSRRCI = BigInt("111", 2).U(3.W)
+
+  //DFC extension
+  val TWA    = BigInt("000", 2).U(3.W)
+  val TWD    = BigInt("001", 2).U(3.W)
 }
 
 object Funct7 {
-  val U = BigInt("0000000", 2).U(7.W)
-  val S = BigInt("0100000", 2).U(7.W)
+  val U   = BigInt("0000000", 2).U(7.W)
+  val S   = BigInt("0100000", 2).U(7.W)
+
+  val DFC = BigInt("0000000", 2).U(7.W)
 }
 
 object Funct12 {
