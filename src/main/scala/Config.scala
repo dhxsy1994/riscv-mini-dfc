@@ -13,10 +13,12 @@ class MiniConfig extends Config((site, here, up) => {
     case BuildALU    => (p: Parameters) => Module(new ALUArea()(p))
     case BuildImmGen => (p: Parameters) => Module(new ImmGenWire()(p))
     case BuildBrCond => (p: Parameters) => Module(new BrCondArea()(p))
-    // Cache
-    case NWays => 1 // TODO: set-associative
-    case NSets => 256 
-    case CacheBlockBytes => 4 * (here(XLEN) >> 3) // 4 x 32 bits = 16B
+    // Cache 单路
+    case NWays => 1 // TODO: set-associative 组相连
+    case NSets => 256 //cache
+    //case DFCSets_N => 256 //DFC M > k*N k为平均输入个数
+    //case DFCSets_M => 256 //DFC
+    case CacheBlockBytes => 4 * (here(XLEN) >> 3) // 4 x 32 bits = 16B 字节单位
     // NastiIO
     case NastiKey => new NastiParameters(
       idBits   = 5,

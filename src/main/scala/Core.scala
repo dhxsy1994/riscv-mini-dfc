@@ -19,6 +19,7 @@ abstract trait CoreParams {
 
 abstract class CoreBundle(implicit val p: Parameters) extends Bundle with CoreParams
 
+//这个类是什么意义
 class HostIO(implicit p: Parameters) extends CoreBundle()(p) {
   val fromhost = Flipped(Valid(UInt(xlen.W)))
   val tohost   = Output(UInt(xlen.W))
@@ -38,5 +39,6 @@ class Core(implicit val p: Parameters) extends Module with CoreParams {
   io.host <> dpath.io.host
   dpath.io.icache <> io.icache
   dpath.io.dcache <> io.dcache
+  //控制模块和数据通路的io接口相连
   dpath.io.ctrl <> ctrl.io
 }
