@@ -17,7 +17,9 @@ abstract class ImmGen(implicit p: Parameters) extends Module {
   val io = IO(new ImmGenIO)
 }
 
+//外部使用wire实现
 class ImmGenWire(implicit p: Parameters) extends ImmGen()(p) {
+  //选择立即数得位置
   val Iimm = io.inst(31, 20).asSInt
   val Simm = Cat(io.inst(31, 25), io.inst(11,7)).asSInt
   val Bimm = Cat(io.inst(31), io.inst(7), io.inst(30, 25), io.inst(11, 8), 0.U(1.W)).asSInt

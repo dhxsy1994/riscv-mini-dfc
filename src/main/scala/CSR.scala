@@ -16,8 +16,9 @@ object CSR {
 
   // Supports machine & user modes
   val PRV_U = 0x0.U(2.W)
-  val PRV_M = 0x3.U(2.W)
+  val PRV_M = 0x3.U(2.W) //仅提供M-mode，b11
 
+  //标志用户级 控制寄存器地址
   // User-level CSR addrs
   val cycle    = 0xc00.U(12.W)
   val time     = 0xc01.U(12.W)
@@ -34,12 +35,12 @@ object CSR {
   val timehw    = 0x981.U(12.W)
   val instrethw = 0x982.U(12.W)
 
-  // Machine-level CSR addrs
+  // Machine-level CSR addrs，在rv32I 指令手册1.5版本能查找到
   // Machine Information Registers
   val mcpuid   = 0xf00.U(12.W)
   val mimpid   = 0xf01.U(12.W)
   val mhartid  = 0xf10.U(12.W)
-  // Machine Trap Setup
+  // Machine Trap Setup, 中断相关的寄存器设置
   val mstatus  = 0x300.U(12.W)
   val mtvec    = 0x301.U(12.W)
   val mtdeleg  = 0x302.U(12.W)
@@ -66,13 +67,14 @@ object CSR {
     mtohost, mfromhost, mstatus)
 }
 
+//exception 代码，可扩展
 object Cause {
   val InstAddrMisaligned  = 0x0.U
   val IllegalInst         = 0x2.U
   val Breakpoint          = 0x3.U
   val LoadAddrMisaligned  = 0x4.U
   val StoreAddrMisaligned = 0x6.U
-  val Ecall               = 0x8.U
+  val Ecall               = 0x8.U //从U-mode环境调用
 }
 
 class CSRIO(implicit p: Parameters)  extends CoreBundle()(p) {
@@ -82,12 +84,14 @@ class CSRIO(implicit p: Parameters)  extends CoreBundle()(p) {
   val out   = Output(UInt(xlen.W))
   // Excpetion
   val pc       = Input(UInt(xlen.W))
+  //操作addr？
   val addr     = Input(UInt(xlen.W))
   val inst     = Input(UInt(xlen.W))
   val illegal  = Input(Bool())
   val st_type  = Input(UInt(2.W))
   val ld_type  = Input(UInt(3.W))
   val pc_check = Input(Bool())
+
   val expt     = Output(Bool())
   val evec     = Output(UInt(xlen.W))
   val epc      = Output(UInt(xlen.W))
@@ -109,13 +113,14 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val instret  = RegInit(0.U(xlen.W))
   val instreth = RegInit(0.U(xlen.W))
 
+  //标志cpu实现位和扩展位，开头00为RV32I
   val mcpuid  = Cat(0.U(2.W) /* RV32I */, 0.U((xlen-28).W),
                     (1 << ('I' - 'A') /* Base ISA */| 
                      1 << ('U' - 'A') /* User Mode */).U(26.W))
   val mimpid  = 0.U(xlen.W) // not implemented
   val mhartid = 0.U(xlen.W) // only one hart
 
-  // interrupt enable stack
+  // interrupt enable stack 中断使能栈，支持嵌套中断
   val PRV  = RegInit(CSR.PRV_M)
   val PRV1 = RegInit(CSR.PRV_M)
   val PRV2 = 0.U(2.W)
@@ -128,21 +133,24 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val VM = 0.U(5.W)
   // memory privilege
   val MPRV = false.B
-  // extention context status
+  // extention context status，似乎没有使用这三个位置
   val XS = 0.U(2.W)
   val FS = 0.U(2.W)
   val SD = 0.U(1.W)
   val mstatus = Cat(SD, 0.U((xlen-23).W), VM, MPRV, XS, FS, PRV3, IE3, PRV2, IE2, PRV1, IE1, PRV, IE)
-  val mtvec   = Const.PC_EVEC.U(xlen.W)
+  val mtvec   = Const.PC_EVEC.U(xlen.W) //中断只能来自用户模式
   val mtdeleg = 0x0.U(xlen.W)
   
-  // interrupt registers
+  // interrupt registers，只支持机器模式，H和S不支持
+  //pending 定时器
   val MTIP = RegInit(false.B)
   val HTIP = false.B
   val STIP = false.B
+  //使能 定时器
   val MTIE = RegInit(false.B)
   val HTIE = false.B
   val STIE = false.B
+
   val MSIP = RegInit(false.B)
   val HSIP = false.B
   val SSIP = false.B
@@ -156,9 +164,9 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
 
   val mscratch = Reg(UInt(xlen.W))
 
-  val mepc = Reg(UInt(xlen.W))
-  val mcause = Reg(UInt(xlen.W))
-  val mbadaddr = Reg(UInt(xlen.W))
+  val mepc = Reg(UInt(xlen.W)) //异常程序计数器，最低两位永远是0，mepc写入碰到异常的指令的虚拟地址
+  val mcause = Reg(UInt(xlen.W)) //原因寄存器
+  val mbadaddr = Reg(UInt(xlen.W)) //坏地址寄存器，取指访问失效，badaddr指向失效部分。mepc指向的是该指令的起始地址
 
   val mtohost = RegInit(0.U(xlen.W))
   val mfromhost = Reg(UInt(xlen.W))
@@ -198,7 +206,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
     BitPat(CSR.mfromhost) -> mfromhost,
     BitPat(CSR.mstatus)   -> mstatus
   )
-
+  //查找对应的csr_addr的csrFile中的内容
   io.out := Lookup(csr_addr, 0.U, csrFile).asUInt
 
   val privValid = csr_addr(9, 8) <= PRV
@@ -214,15 +222,19 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
     CSR.S -> (io.out | io.in),
     CSR.C -> (io.out & ~io.in)
   ))
-  val iaddrInvalid = io.pc_check && io.addr(1)
+  //三类指令的addr是否有效的判断
+  val iaddrInvalid = io.pc_check && io.addr(1) //地址1 是什么位置
   val laddrInvalid = MuxLookup(io.ld_type, false.B, Seq(
-    Control.LD_LW -> io.addr(1, 0).orR, Control.LD_LH -> io.addr(0), Control.LD_LHU -> io.addr(0)))
+    Control.LD_LW -> io.addr(1, 0).orR,
+    Control.LD_LH -> io.addr(0),
+    Control.LD_LHU -> io.addr(0)))
   val saddrInvalid = MuxLookup(io.st_type, false.B, Seq(
-    Control.ST_SW -> io.addr(1, 0).orR, Control.ST_SH -> io.addr(0)))
+    Control.ST_SW -> io.addr(1, 0).orR,
+    Control.ST_SH -> io.addr(0)))
   io.expt := io.illegal || iaddrInvalid || laddrInvalid || saddrInvalid ||
              io.cmd(1, 0).orR && (!csrValid || !privValid) || wen && csrRO || 
              (privInst && !privValid) || isEcall || isEbreak
-  io.evec := mtvec + (PRV << 6)
+  io.evec := mtvec + (PRV << 6) //指令集规定，mtvec + PRV*0x40
   io.epc  := mepc
 
   // Counters
@@ -236,7 +248,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
 
   when(!io.stall) {
     when(io.expt) {
-      mepc   := io.pc >> 2 << 2
+      mepc   := io.pc >> 2 << 2 //这是什么操作？
       mcause := Mux(iaddrInvalid, Cause.InstAddrMisaligned,
                 Mux(laddrInvalid, Cause.LoadAddrMisaligned,
                 Mux(saddrInvalid, Cause.StoreAddrMisaligned,

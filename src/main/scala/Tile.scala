@@ -101,6 +101,7 @@ trait TileBase extends core.BaseModule {
 }
 
 class Tile(tileParams: Parameters) extends Module with TileBase {
+  //IO与模块分离，方便接线
   implicit val p = tileParams
   val io     = IO(new TileIO)
   val core   = Module(new Core)
