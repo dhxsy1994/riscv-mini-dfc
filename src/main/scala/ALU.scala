@@ -55,6 +55,7 @@ class ALUSimple(implicit p: Parameters) extends ALU()(p) {
   io.sum := io.A + Mux(io.alu_op(0), -io.B, io.B)
 }
 
+// CPU是使用该实现的
 class ALUArea(implicit p: Parameters) extends ALU()(p) { 
   val sum = io.A + Mux(io.alu_op(0), -io.B, io.B)
   val cmp = Mux(io.A(xlen-1) === io.B(xlen-1), sum(xlen-1),
