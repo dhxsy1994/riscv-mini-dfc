@@ -157,15 +157,15 @@ class ControlSignals(implicit p: Parameters) extends CoreBundle()(p) {
   val csr_cmd   = Output(UInt(3.W))
   val illegal   = Output(Bool())
 
-  val read_df   = Output(UInt(3.W))
-  val write_df  = Output(UInt(2.W))
-
   //DFC extension
-  // 3bit-> 000
-//  val wEnA  -> x??
-//  val wEnD_Addr -> ?x?
-//  val wEnD_Info -> ??x
+  //   xxx      -> 000
+  //  val wEnA  -> x??
+  //  val wEnD_Addr -> ?x?
+  //  val wEnD_Info -> ??x
   val dfc_wen = Output(UInt(3.W))
+
+//  val read_df   = Output(UInt(3.W))
+//  val write_df  = Output(UInt(2.W))
 }
 
 // 控制信号生成模块
