@@ -76,6 +76,7 @@ object Funct7 {
   val U   = BigInt("0000000", 2).U(7.W)
   val S   = BigInt("0100000", 2).U(7.W)
 
+  //DFC extension
   val DFC = BigInt("0000000", 2).U(7.W)
 }
 

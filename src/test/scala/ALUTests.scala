@@ -13,9 +13,9 @@ class ALUTester(alu: => ALU)(implicit p: freechips.rocketchip.config.Parameters)
   val xlen = p(XLEN)
 
   val (cntr, done) = Counter(true.B, insts.size)
-  val rs1  = Seq.fill(insts.size)(rnd.nextInt()) map toBigInt
+  val rs1  = Seq.fill(insts.size)(rnd.nextInt()) map toBigInt //生成一个长度为insts.size的Seq，每个元素为rnd，然后转换为BigInt
   val rs2  = Seq.fill(insts.size)(rnd.nextInt()) map toBigInt
-  val sum  = VecInit((rs1 zip rs2) map { case (a, b) => toBigInt(a.toInt + b.toInt).U(xlen.W) })
+  val sum  = VecInit((rs1 zip rs2) map { case (a, b) => toBigInt(a.toInt + b.toInt).U(xlen.W) }) //生成一个kv键值对表后，对相应元素执行方法，最后转换的是一个Vec
   val diff = VecInit((rs1 zip rs2) map { case (a, b) => toBigInt(a.toInt - b.toInt).U(xlen.W) })
   val and  = VecInit((rs1 zip rs2) map { case (a, b) => (a & b).U(xlen.W) })
   val or   = VecInit((rs1 zip rs2) map { case (a, b) => (a | b).U(xlen.W) })
