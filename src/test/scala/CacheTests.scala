@@ -33,6 +33,7 @@ class GoldCache(implicit val p: Parameters) extends Module with CacheParams {
     ((off / 4.U) === (i / 4).U) && (req.mask >> (i & 0x3).U)(0),
     ((req.data >> ((8 * (i & 0x3)).U)) & 0xff.U) << (8 * i).U, read & (BigInt(0xff) << (8 * i)).U)
   })(bBits - 1, 0)
+  //TODO: 按照掩码拼接写数据，看不懂这是什么规则写数据的，和掩码有关系
 
   val sIdle :: sWrite :: sWrAck :: sRead :: Nil = Enum(4)
   val state = RegInit(sIdle)
@@ -53,7 +54,7 @@ class GoldCache(implicit val p: Parameters) extends Module with CacheParams {
 
   switch(state) {
     is(sIdle) {
-      when(io.req.valid && io.resp.ready) {
+      when(io.req.valid && io.resp.ready) { //这个判断似乎不可能成立，怎么修改对应值
         when(v(idx) && (tags(idx) === tag)) {
           when(req.mask.orR) {
             d(idx)    := true.B
@@ -131,7 +132,7 @@ class CacheTester(cache: => Cache)(implicit val p: freechips.rocketchip.config.P
   val len   = (dataBeats - 1).U
 
   /* Main Memory */
-  val mem = Mem(1 << 20, UInt(nastiXDataBits.W))
+  val mem = Mem(1 << 20, UInt(nastiXDataBits.W)) //64bits 宽度的主存
   val sMemIdle :: sMemWrite :: sMemWrAck :: sMemRead :: Nil = Enum(4)
   val memState = RegInit(sMemIdle)
   val (wCnt, wDone) = Counter(memState === sMemWrite && dut_mem.w.valid && gold_mem.w.valid, dataBeats)
@@ -227,6 +228,7 @@ class CacheTester(cache: => Cache)(implicit val p: freechips.rocketchip.config.P
   val idxs = Vector.fill(2)(rand_idx)
   val offs = Vector.fill(6)(rand_off)
 
+  // 12条数据
   val initAddr = for {
     tag <- tags
     idx <- idxs

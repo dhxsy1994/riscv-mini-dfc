@@ -69,7 +69,8 @@ object Funct3 {
 
   //DFC extension
   val TWA    = BigInt("000", 2).U(3.W)
-  val TWD    = BigInt("001", 2).U(3.W)
+  val TWD_AD = BigInt("001", 2).U(3.W)
+  val TWD_IF = BigInt("010", 2).U(3.W)
 }
 
 object Funct7 {
