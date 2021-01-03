@@ -56,6 +56,7 @@ object CSR {
   val mbadaddr = 0x343.U(12.W)
   val mip      = 0x344.U(12.W)
   // Machine HITF
+  // Machine Host-Target interface
   val mtohost   = 0x780.U(12.W)
   val mfromhost = 0x781.U(12.W)
 
@@ -231,11 +232,12 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val saddrInvalid = MuxLookup(io.st_type, false.B, Seq(
     Control.ST_SW -> io.addr(1, 0).orR,
     Control.ST_SH -> io.addr(0)))
+  //发生例外情况
   io.expt := io.illegal || iaddrInvalid || laddrInvalid || saddrInvalid ||
              io.cmd(1, 0).orR && (!csrValid || !privValid) || wen && csrRO || 
              (privInst && !privValid) || isEcall || isEbreak
   io.evec := mtvec + (PRV << 6) //指令集规定，mtvec + PRV*0x40
-  io.epc  := mepc
+  io.epc  := mepc //机器异常程序计数器
 
   // Counters
   time := time + 1.U

@@ -172,7 +172,8 @@ class ControlSignals(implicit p: Parameters) extends CoreBundle()(p) {
 // 对应于三种阶段的控制信号生成
 class Control(implicit p: Parameters) extends Module {
   val io = IO(new ControlSignals)
-  //控制信号译码查询，是选择数组List的元素的
+  //控制信号译码查询，是选择数组List的元素
+  //NOP指令是default信号发出
   val ctrlSignals = ListLookup(io.inst, Control.default, Control.map)
 
   // Control signals for Fetch

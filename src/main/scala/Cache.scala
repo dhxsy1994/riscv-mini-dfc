@@ -43,7 +43,7 @@ class CacheModuleIO(implicit val p: Parameters) extends Bundle {
 trait CacheParams extends CoreParams with HasNastiParameters {
   val nWays  = p(NWays) // Not used... 单路，给组相连扩展，没有被使用
   // 数据块4字大小，按照字节编址？
-  // 256 nset，256个cacheline
+  // 256 nset，256个组
   val nSets  = p(NSets)
   //cache 块字节
   // 16B
@@ -115,7 +115,7 @@ class Cache(implicit val p: Parameters) extends Module with CacheParams {
 
   //命中，电路节点类型
   val hit = Wire(Bool())
-  //写使能 可写且或命中货可分配，且cpu不中断或可分配
+  //写使能 可写且命中或可分配，且cpu不中断或可分配
   val wen = is_write && (hit || is_alloc_reg) && !io.cpu.abort || is_alloc
   //读使能 需要空闲且cpu可用
   val ren = !wen && (is_idle || is_read) && io.cpu.req.valid
@@ -129,7 +129,7 @@ class Cache(implicit val p: Parameters) extends Module with CacheParams {
   //tag 31-12
   val tag_reg  = addr_reg(xlen-1, slen+blen)
   val idx_reg  = addr_reg(slen+blen-1, blen)
-  //4-2
+  //addr_reg(3,2)
   val off_reg  = addr_reg(blen-1, byteOffsetBits)
 
   //直接读取，按照索引位置读
