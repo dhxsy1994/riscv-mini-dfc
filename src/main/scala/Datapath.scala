@@ -25,6 +25,7 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   val io      = IO(new DatapathIO)
   val csr     = Module(new CSR)
   val regFile = Module(new RegFile)
+  val real_DfcTile = Module(new DfcTile)
   //数据通路包含组件，下面三个的初始化方法，使用的是传递参数的方法
   val alu     = p(BuildALU)(p)
   val immGen  = p(BuildImmGen)(p)
@@ -57,6 +58,7 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   //指令cache或数据cache无效，stall流水
   val stall = !io.icache.resp.valid || !io.dcache.resp.valid
 
+  //从pc_start - 4 开始
   val pc   = RegInit(Const.PC_START.U(xlen.W) - 4.U(xlen.W))
 
   //下一个pc值，发生expt，pc跳转到evec处
@@ -82,7 +84,7 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
 
   /****** Execute *****/
   // Decode
-  // 指令译码，fech到的指令传递到ctrl单元
+  // 指令译码，fetch到的指令传递到ctrl单元
   io.ctrl.inst  := fe_inst
 
   // regFile read
@@ -137,6 +139,7 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
     ew_pc     := fe_pc
     ew_inst   := fe_inst
     ew_alu    := alu.io.out
+    //状态控制寄存器有可能使用立即数字段
     csr_in    := Mux(io.ctrl.imm_sel === IMM_Z, immGen.io.out, rs1)
     st_type   := io.ctrl.st_type
     ld_type   := io.ctrl.ld_type
@@ -181,8 +184,24 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   // Abort store when there's an excpetion
   io.dcache.abort := csr.io.expt
 
+  //--------------DFC extension----------------//
+  //DfcTile Connection
+  val dfc_wen = io.ctrl.dfc_wen
 
+  //wEn
+  real_DfcTile.io.wEnA := dfc_wen(2)
+  real_DfcTile.io.wEnD_Addr := dfc_wen(1)
+  real_DfcTile.io.wEnD_Info := dfc_wen(0)
 
+  //wData
+  real_DfcTile.io.wData := rs1
+
+  //opAddr
+  real_DfcTile.io.opAddr_A := rs2
+  real_DfcTile.io.opAddr_D := rs2
+
+  //listenaddr
+  real_DfcTile.io.listenAddr := daddr
 
   //trace 打印指令和pc，以及往寄存器文件写入的内容
   if (p(Trace)) {

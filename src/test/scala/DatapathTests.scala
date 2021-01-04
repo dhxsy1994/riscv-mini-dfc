@@ -37,9 +37,11 @@ class DatapathTester(datapath: => Datapath,
 
   switch(state) {
     is(sInit) {
+      //装载指令到mem，从0到0x200间，mem内部按addr/4装上nop
       (0 until Const.PC_START by 4) foreach { addr =>
         mem((addr / 4).U) := (if (addr == Const.PC_EVEC + (3 << 6)) fin else nop)
       }
+      //mem 从0x100 / 4 开始按cntr累加将inst放入
       mem((Const.PC_START / (xlen / 8)).U + cntr) := VecInit(insts)(cntr)
       when(done) { state := sRun }
     }

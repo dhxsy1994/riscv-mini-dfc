@@ -32,14 +32,19 @@ trait TestUtils {
   def csr(inst: UInt) =  (inst.litValue() >> 20)
   def reg(x: Int) = (x & ((1 << 5) - 1)).U(5.W)
   def imm(x: Int) = (x & ((1 << 20) - 1)).S(21.W)
+
   def Cat(l: Seq[Bits]): UInt = (l.tail foldLeft l.head.asUInt){(x, y) =>
     assert(x.isLit() && y.isLit())
     (x.litValue() << y.getWidth | y.litValue()).U((x.getWidth + y.getWidth).W)
   }
   def Cat(x: Bits, l: Bits*): UInt = Cat(x :: l.toList)
+
+  //fence 指令，表示为32位bit
   val fence = Cat(0.U(4.W), 0xf.U(4.W), 0xf.U(4.W), 0.U(13.W), Opcode.MEMORY)
+  //nop 表示为addi x0，x0，0
   val nop   = Cat(0.U(12.W), reg(0), Funct3.ADD, reg(0), Opcode.ITYPE)
   val csrRegs = CSR.regs map (_.litValue())
+
   private val csrMap  = (csrRegs zip List(
     "cycle", "time", "instret", "cycleh", "timeh", "instreth",
     "cyclew", "timew", "instretw", "cyclehw", "timehw", "instrethw",
@@ -80,6 +85,8 @@ trait TestUtils {
   def rand_inst = toBigInt(rnd.nextInt()).U
   def rand_addr = toBigInt(rnd.nextInt()).U
   def rand_data = toBigInt(rnd.nextInt()).U
+  val zero_rd = 0.U(5.W)
+
 
   val insts: Seq[UInt]  = Seq(
     Cat(rand_fn7, rand_rs2, rand_rs1, rand_fn3, rand_rd, Opcode.LUI),
@@ -126,7 +133,10 @@ trait TestUtils {
     Cat(rand_csr, rand_rs1, Funct3.CSRRWI, rand_rd, Opcode.SYSTEM),
     Cat(rand_csr, rand_rs1, Funct3.CSRRSI, rand_rd, Opcode.SYSTEM),
     Cat(rand_csr, rand_rs1, Funct3.CSRRCI, rand_rd, Opcode.SYSTEM),
-    ECALL, EBREAK, ERET, nop, rand_inst
+    ECALL, EBREAK, ERET, nop, rand_inst,
+    Cat(Funct7.DFC, rand_rs2, rand_rs1, Funct3.TWA, zero_rd, Opcode.DFC),
+    Cat(Funct7.DFC, rand_rs2, rand_rs1, Funct3.TWD_AD, zero_rd, Opcode.DFC),
+    Cat(Funct7.DFC, rand_rs2, rand_rs1, Funct3.TWD_IF, zero_rd, Opcode.DFC)
   )
 
   def RU(funct3: UInt, rd: Int, rs1: Int, rs2: Int) = 
@@ -149,6 +159,12 @@ trait TestUtils {
     Cat(imm(i)(11, 0), reg(rs1), 0.U(3.W), reg(rd), Opcode.JALR)
   def SYS(funct3: UInt, rd: Int, csr: UInt, rs1: Int) = 
     Cat(csr, reg(rs1), funct3, reg(rd), Opcode.SYSTEM)
+  def DFCTW(funct3: UInt, rs1: Int, rs2: Int) =
+    Cat(Funct7.DFC, reg(rs2), reg(rs1), funct3, zero_rd, Opcode.DFC)
+//  def TWD_AD(funct3: UInt, rs1: Int, rs2: Int) =
+//    Cat(Funct7.DFC, reg(rs2), reg(rs1), funct3, zero_rd, Opcode.DFC)
+//  def TWD_IF(funct3: UInt, rs1: Int, rs2: Int) =
+//    Cat(Funct7.DFC, reg(rs2), reg(rs1), funct3, zero_rd, Opcode.DFC)
 
   val fin = Cat(CSR.mtohost, reg(31), Funct3.CSRRW, reg(0), Opcode.SYSTEM)
   val bypassTest = List(
@@ -181,6 +197,31 @@ trait TestUtils {
     I(Funct3.ADD, 31, 31, 1),  // ADDI x31, x31, 1 # x31 <- 6
     I(Funct3.ADD, 31, 31, 1),  // ADDI x31, x31, 1 # x31 <- 7
     fin
+  )
+  val dfcTest = List(
+    //write TableA Data = 0x03080010 in reg(5)
+    U(Opcode.LUI, 5, 12416), // LUI x5, 0x03080 # x5 <- 0x03080000
+    I(Funct3.ADD, 6,  5,  16),  // ADDI x6, x5, 16  # x5 <- 0x03080 + 0x010
+    I(Funct3.ADD, 5, 6, 0), // ADDI x5, x6, 0 # MOV x5 <- x6
+    //write TableA Addr = 0x9 in reg(6)
+    I(Funct3.ADD, 6, 0,  12),  // ADDI x6, x0, 9 # x6 <- 12
+    DFCTW(Funct3.TWA, 5, 6), //TWA x5, x6 # rs1 = wData, rs2 = waddr
+
+    //write TableD_addr Data = 0x46403377
+    U(Opcode.LUI, 7, 287747), // LUI x7, 0x46403 # x7 <- 0x46403000
+    I(Funct3.ADD, 8, 7, 887), // ADDI x8, x7, 16  # x5 <- 0x46403 + 0x377
+    I(Funct3.ADD, 7, 8, 0), // ADDI x7, x8, 0 # MOV x7 <- x8
+    //write TableD_addr Addr = 0x8 in reg(8)
+    I(Funct3.ADD, 8, 0, 8), // ADDI, x8, x0, 8 # x8 <- 8
+    DFCTW(Funct3.TWD_AD, 7, 8), // TWD_AD x7, x8 # rs1 = wData, rs2 = waddr
+
+    //write TableD_info Data = 0x0000024C
+    U(Opcode.LUI, 9, 0),// LUI x9, 0x0 # x9 <- 0x0
+    I(Funct3.ADD, 10, 9, 588), // ADDI x10, x9, 588 # x10 <- 0x00000000 + 0x24C
+    I(Funct3.ADD, 9, 10, 0), // ADDI x9, x10, 0 # MOV x9 <- x10
+    //write TableD_info Addr = 0x9 in reg(10)
+    I(Funct3.ADD, 10, 0, 9), // ADDI x10, x0, 9 # x10 <- 0x9
+    DFCTW(Funct3.TWD_IF, 9, 10), //TWD_IF x9, x19
   )
   val tests = Map(
     BypassTest    -> bypassTest,
