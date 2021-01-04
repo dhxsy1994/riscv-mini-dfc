@@ -17,6 +17,10 @@ object ExceptionTest extends DatapathTest {
   override def toString: String = "exception test"
 }
 // Define your own test
+object DfcTest extends DatapathTest{
+  override def toString: String = "dfc test"
+}
+
 
 trait TestUtils {
   implicit def boolToBoolean(x: Bool) = x.litValue() == 1
@@ -222,13 +226,18 @@ trait TestUtils {
     //write TableD_info Addr = 0x9 in reg(10)
     I(Funct3.ADD, 10, 0, 9), // ADDI x10, x0, 9 # x10 <- 0x9
     DFCTW(Funct3.TWD_IF, 9, 10), //TWD_IF x9, x19
+
+    I(Funct3.ADD, 31, 0, 0), // ADDI x31, x0, 0 # x31 <- 0x0 For Finished Verify...
+    fin
   )
   val tests = Map(
     BypassTest    -> bypassTest,
-    ExceptionTest -> exceptionTest)
+    ExceptionTest -> exceptionTest,
+    DfcTest -> dfcTest)
   val testResults = Map(
     BypassTest    -> 10,
-    ExceptionTest -> 4
+    ExceptionTest -> 4,
+    DfcTest -> 0
   )
 }
 
