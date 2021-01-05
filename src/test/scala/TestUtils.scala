@@ -203,32 +203,31 @@ trait TestUtils {
     fin
   )
   val dfcTest = List(
-    fence,
     //write TableA Data = 0x03080010 in reg(5)
-    U(Opcode.LUI, 5, 12416), // LUI x5, 0x03080 # x5 <- 0x03080000
-    I(Funct3.ADD, 6,  5,  16),  // ADDI x6, x5, 16  # x5 <- 0x03080 + 0x010
-    I(Funct3.ADD, 5, 6, 0), // ADDI x5, x6, 0 # MOV x5 <- x6
-    //write TableA Addr = 0x9 in reg(6)
-    I(Funct3.ADD, 6, 0,  12),  // ADDI x6, x0, 9 # x6 <- 12
-    DFCTW(Funct3.TWA, 5, 6), //TWA x5, x6 # rs1 = wData, rs2 = waddr
-
+    U(Opcode.LUI, 5, 12416),           // LUI x5, 0x03080  # x5 <- 0x03080000
+    I(Funct3.ADD, 6,  5,  16),   // ADDI x6, x5, 16  # x6 <- 0x03080 + 0x010
+    I(Funct3.ADD, 5, 6, 0),      // ADDI x5, x6, 0   # MOV x5 <- x6
+    //write TableA Addr = 0x12 in reg(6)
+    I(Funct3.ADD, 6, 0,  12),    // ADDI x6, x0, 9   # x6 <- 12
+    DFCTW(Funct3.TWA, 5, 6),    // TWA x5, x6       # rs1 = wData, rs2 = waddr
+    nop,
     //write TableD_addr Data = 0x46403377
-    U(Opcode.LUI, 7, 287747), // LUI x7, 0x46403 # x7 <- 0x46403000
-    I(Funct3.ADD, 8, 7, 887), // ADDI x8, x7, 16  # x5 <- 0x46403 + 0x377
-    I(Funct3.ADD, 7, 8, 0), // ADDI x7, x8, 0 # MOV x7 <- x8
+    U(Opcode.LUI, 7, 287747),          // LUI x7, 0x46403  # x7 <- 0x46403000
+    I(Funct3.ADD, 8, 7, 887),    // ADDI x8, x7, 16  # x5 <- 0x46403 + 0x377
+    I(Funct3.ADD, 7, 8, 0),      // ADDI x7, x8, 0   # MOV x7 <- x8
     //write TableD_addr Addr = 0x8 in reg(8)
-    I(Funct3.ADD, 8, 0, 8), // ADDI, x8, x0, 8 # x8 <- 8
-    DFCTW(Funct3.TWD_AD, 7, 8), // TWD_AD x7, x8 # rs1 = wData, rs2 = waddr
-
+    I(Funct3.ADD, 8, 0, 8),      // ADDI, x8, x0, 8  # x8 <- 8
+    DFCTW(Funct3.TWD_AD, 7, 8), // TWD_AD x7, x8    # rs1 = wData, rs2 = waddr
+    nop,
     //write TableD_info Data = 0x0000024C
-    U(Opcode.LUI, 9, 0),// LUI x9, 0x0 # x9 <- 0x0
-    I(Funct3.ADD, 10, 9, 588), // ADDI x10, x9, 588 # x10 <- 0x00000000 + 0x24C
-    I(Funct3.ADD, 9, 10, 0), // ADDI x9, x10, 0 # MOV x9 <- x10
+    U(Opcode.LUI, 9, 0),               // LUI x9, 0x0      # x9 <- 0x0
+    I(Funct3.ADD, 10, 9, 588),   // ADDI x10, x9,588 # x10 <- 0x00000000 + 0x24C
+    I(Funct3.ADD, 9, 10, 0),     // ADDI x9, x10, 0  # MOV x9 <- x10
     //write TableD_info Addr = 0x9 in reg(10)
-    I(Funct3.ADD, 10, 0, 9), // ADDI x10, x0, 9 # x10 <- 0x9
-    DFCTW(Funct3.TWD_IF, 9, 10), //TWD_IF x9, x19
-
-    I(Funct3.ADD, 31, 0, 0), // ADDI x31, x0, 0 # x31 <- 0x0 For Finished Verify...
+    I(Funct3.ADD, 10, 0, 9),     // ADDI x10, x0, 9  # x10 <- 0x9
+    DFCTW(Funct3.TWD_IF, 9, 10),// TWD_IF x9, x19
+    nop,
+    I(Funct3.ADD, 31, 0, 0),     // ADDI x31, x0, 0  # x31 <- 0x0 For Finished Verify...
     fin
   )
   val tests = Map(

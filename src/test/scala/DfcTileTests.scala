@@ -111,7 +111,8 @@ class  WaveformTester_DfcTileTester(dut: DfcTile) extends PeekPokeTester(dut){
     with complete write and read
  */
   val wData_A = 0x03080010
-  //write TableD MetaInfo: tableAId = 12, LinkNext =  9, 10, 0
+  // write TableD MetaInfo: tableAId = 12
+  // LinkNext =  9, 10, 0
 
   val wData_D_addr0 = 0x46403377
   val wData_D_addr1 = 0x46403378
