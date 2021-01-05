@@ -203,6 +203,7 @@ trait TestUtils {
     fin
   )
   val dfcTest = List(
+    fence,
     //write TableA Data = 0x03080010 in reg(5)
     U(Opcode.LUI, 5, 12416), // LUI x5, 0x03080 # x5 <- 0x03080000
     I(Funct3.ADD, 6,  5,  16),  // ADDI x6, x5, 16  # x5 <- 0x03080 + 0x010
