@@ -237,7 +237,7 @@ trait TestUtils {
   val testResults = Map(
     BypassTest    -> 10,
     ExceptionTest -> 4,
-    DfcTest -> 0
+    DfcTest -> 1                            // For Finished Verify...
   )
 }
 
