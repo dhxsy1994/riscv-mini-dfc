@@ -6,6 +6,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.internal.firrtl.Width
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
+import freechips.rocketchip.config.Parameters
 
 //TableD Meta
 class D_addrMeta extends Bundle {
@@ -36,7 +37,7 @@ class dfc_DIO extends Bundle {
   val counterDownEn = Output(Bool())
 }
 
-class dfc_D extends Module {
+class dfc_D (implicit val p: Parameters) extends Module with CoreParams {
 
   val io = IO(new dfc_DIO)
 
@@ -153,13 +154,15 @@ class dfc_D extends Module {
     infoMeta_valid := infoMeta_valid.bitSet(listenHitAddr, false.B)
   }
 
-  printf("addrMeta(%d) = %x\n", lastopAddr, addrMetaMem(lastopAddr).listenAddr)
-  printf("infoMeta(%d).LinkNext = %d\n", lastopAddr, infoMetaMem(lastopAddr).LinkNext)
-  printf("infoMeta(%d).TableAId = %d\n", lastopAddr, infoMetaMem(lastopAddr).TableAId)
+  if(p(Trace)){
+    printf("addrMeta(%d) = %x\n", lastopAddr, addrMetaMem(lastopAddr).listenAddr)
+    printf("infoMeta(%d).LinkNext = %d\n", lastopAddr, infoMetaMem(lastopAddr).LinkNext)
+    printf("infoMeta(%d).TableAId = %d\n", lastopAddr, infoMetaMem(lastopAddr).TableAId)
 
-  printf("io.counterDownAddr = %d\n", io.counterDownAddr)
-  printf("io.counterDownEn = %d\n", io.counterDownEn)
+    printf("io.counterDownAddr = %d\n", io.counterDownAddr)
+    printf("io.counterDownEn = %d\n", io.counterDownEn)
 
-  //printf("listenHitAddr = %d\n", listenHitAddr)
+    //printf("listenHitAddr = %d\n", listenHitAddr)
+  }
 }
 

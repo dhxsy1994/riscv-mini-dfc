@@ -80,6 +80,7 @@ class WaveformTester_dfc_A_Loopone (dut: dfc_A) extends PeekPokeTester(dut) {
 
 class WaveformSpec_dfc_A_Loopone extends FlatSpec with Matchers {
   "WaveformTester_dfc_A_Loopone" should "pass" in {
+    implicit val p = (new MiniConfig).toInstance
     Driver.execute(Array("--generate-vcd-output", "on"), () => new dfc_A){
       c => new WaveformTester_dfc_A_Loopone(c)
     } should be (true)
@@ -132,6 +133,7 @@ class WaveformTester_dfc_A_Looptwo(dut: dfc_A) extends PeekPokeTester(dut){
 
 class WaveformSpec_dfc_A_Looptwo extends FlatSpec with Matchers {
   "WaveformTester_dfc_A_Looptwo" should "pass" in {
+    implicit val p = (new MiniConfig).toInstance
     Driver.execute(Array("--generate-vcd-output", "on"), () => new dfc_A){
       c => new WaveformTester_dfc_A_Looptwo(c)
     } should be (true)

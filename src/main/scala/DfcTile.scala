@@ -5,6 +5,7 @@ import chisel3._
 import chisel3.util._
 import chisel3.internal.firrtl.Width
 import chisel3.iotesters.{ChiselFlatSpec, Driver, PeekPokeTester}
+import freechips.rocketchip.config.Parameters
 
 
 class DfcTileIO extends Bundle{
@@ -25,7 +26,7 @@ class DfcTileIO extends Bundle{
 }
 
 
-class DfcTile extends Module {
+class DfcTile(implicit val p: Parameters) extends Module with CoreParams {
   val io = IO(new DfcTileIO)
 
   val TableA = Module(new dfc_A)
@@ -59,6 +60,8 @@ class DfcTile extends Module {
   //counterDownAddr connect
   TableA.io.counterDownAddr <> TableD.io.counterDownAddr
 
-  printf("TileinterruptPost=%d\n", io.interruptPost)
+  if(p(Trace)){
+    printf("TileinterruptPost=%d\n", io.interruptPost)
+  }
 }
 

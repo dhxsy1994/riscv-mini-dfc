@@ -140,7 +140,7 @@ class dfc_AIO extends Bundle {
 }
 
 //Table A
-class dfc_A extends Module {
+class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
 
   val io = IO(new dfc_AIO)
 
@@ -235,11 +235,13 @@ class dfc_A extends Module {
   //read rData, only read Metamem.pId info, read Data without condition
   io.rData := Metamem(io.opAddr).pId
   io.equalZeroAddr := counterPart.io.equalZeroAddr
-  //print
-  printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
-  printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
-  printf("io.rData = %d\n", io.rData)
-  printf("io.interruptPost = %d\n", io.interruptPost)
+
+  if(p(Trace)){
+    printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
+    printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
+    printf("io.rData = %d\n", io.rData)
+    printf("io.interruptPost = %d\n", io.interruptPost)
+  }
 }
 
 

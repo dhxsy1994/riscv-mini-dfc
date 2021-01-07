@@ -40,6 +40,7 @@ class WaveformTester_DfcTileTester_twA(dut: DfcTile) extends PeekPokeTester(dut)
 
 class WaveformSpec_DfcTileTester_twA extends FlatSpec with Matchers{
   "DfcTileTester_Test write TableA" should "pass" in {
+    implicit val p = (new MiniConfig).toInstance
     Driver.execute(Array("--generate-vcd-output", "on"), () => new DfcTile){
       c => new WaveformTester_DfcTileTester_twA(c)
     } should be (true)
@@ -100,6 +101,7 @@ class WaveformTester_DfcTileTester_twD(dut: DfcTile) extends PeekPokeTester(dut)
 
 class WaveformSpec_DfcTileTester_twD extends FlatSpec with Matchers {
   "DfcTileTester_Test write TableD" should "pass" in {
+    implicit val p = (new MiniConfig).toInstance
     Driver.execute(Array("--generate-vcd-output", "on"), () => new DfcTile){
       c => new WaveformTester_DfcTileTester_twD(c)
     } should be (true)
@@ -152,6 +154,7 @@ class  WaveformTester_DfcTileTester(dut: DfcTile) extends PeekPokeTester(dut){
 
 class WaveformSpec_DfcTileTester extends FlatSpec with Matchers{
   "DfcTileTester_Test" should "pass" in {
+    implicit val p = (new MiniConfig).toInstance
     Driver.execute(Array("--generate-vcd-output", "on"), () => new DfcTile){
       c => new WaveformTester_DfcTileTester(c)
     } should be (true)
