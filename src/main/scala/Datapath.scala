@@ -184,24 +184,25 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   // Abort store when there's an excpetion
   io.dcache.abort := csr.io.expt
 
-  //--------------DFC extension----------------//
+  //----------------DFC extension----------------//
   //DfcTile Connection
   val dfc_wen = io.ctrl.dfc_wen
 
   //wEn
-  real_DfcTile.io.wEnA := dfc_wen(2)
+  real_DfcTile.io.wEnA      := dfc_wen(0)
   real_DfcTile.io.wEnD_Addr := dfc_wen(1)
-  real_DfcTile.io.wEnD_Info := dfc_wen(0)
+  real_DfcTile.io.wEnD_Info := dfc_wen(2)
 
   //wData
-  real_DfcTile.io.wData := rs1
+  real_DfcTile.io.wData     := rs1
 
   //opAddr
-  real_DfcTile.io.opAddr_A := rs2
-  real_DfcTile.io.opAddr_D := rs2
+  real_DfcTile.io.opAddr_A  := rs2
+  real_DfcTile.io.opAddr_D  := rs2
 
   //listenaddr
   real_DfcTile.io.listenAddr := daddr
+  //----------------DFC extension----------------//
 
   //trace 打印指令和pc，以及往寄存器文件写入的内容
   if (p(Trace)) {
