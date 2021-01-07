@@ -227,7 +227,7 @@ trait TestUtils {
     I(Funct3.ADD, 10, 0, 9),     // ADDI x10, x0, 9  # x10 <- 0x9
     DFCTW(Funct3.TWD_IF, 9, 10),// TWD_IF x9, x19
     nop,
-    I(Funct3.ADD, 31, 0, 0),     // ADDI x31, x0, 0  # x31 <- 0x0 For Finished Verify...
+    I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
     fin
   )
   val tests = Map(
