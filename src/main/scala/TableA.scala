@@ -200,6 +200,9 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
   //write A table
   when(lastwEn && !valid(lastopAddr)) {
     //write Meta
+    printf("[WTA](id: %d).inputLink = %d\n", lastopAddr, winputLink)
+    printf("[WTA](id: %d).pId = %d\n", lastopAddr, wpId)
+    printf("[WTA](id: %d).count = %d\n", lastopAddr, wCount)
     Metamem.write(addr_wire, wMeta)
 
     //write Counterneed load, dIn
@@ -227,7 +230,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
 
   //sync with counterPart.interruptSignal
   when(counterPartInterrupt_wire) {
-    printf("---TableA Post exception---\n")
+    printf("[Post] TableA counterPart set ZERO\n")
     io.interruptPost := true.B
     valid := valid.bitSet(counterPart.io.equalZeroAddr, false.B)
   }
@@ -237,8 +240,8 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
   io.equalZeroAddr := counterPart.io.equalZeroAddr
 
   if(p(Trace)){
-    printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
-    printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
+    //printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
+    //printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
     printf("io.rData = %d\n", io.rData)
     printf("io.interruptPost = %d\n", io.interruptPost)
   }
