@@ -162,8 +162,7 @@ class dfc_D (implicit val p: Parameters) extends Module with CoreParams {
 //    printf("infoMeta(%d).LinkNext = %d\n", lastopAddr, infoMetaMem(lastopAddr).LinkNext)
 //    printf("infoMeta(%d).TableAId = %d\n", lastopAddr, infoMetaMem(lastopAddr).TableAId)
 
-    printf("io.counterDownAddr = %d\n", io.counterDownAddr)
-    printf("io.counterDownEn = %d\n", io.counterDownEn)
+    printf("[Counter]counterDownAddr = %d, counterDownEn = %d\n", io.counterDownAddr, io.counterDownEn)
   }
 }
 

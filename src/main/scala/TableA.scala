@@ -243,7 +243,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
     //printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
     //printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
     printf("io.rData = %d\n", io.rData)
-    printf("io.interruptPost = %d\n", io.interruptPost)
+    //printf("io.interruptPost = %d\n", io.interruptPost)
   }
 }
 
