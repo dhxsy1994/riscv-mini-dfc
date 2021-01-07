@@ -230,7 +230,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
 
   //sync with counterPart.interruptSignal
   when(counterPartInterrupt_wire) {
-    printf("[Post] TableA counterPart set ZERO\n")
+    printf("[Post] One line of TableA had been set ZERO\n")
     io.interruptPost := true.B
     valid := valid.bitSet(counterPart.io.equalZeroAddr, false.B)
   }
@@ -242,8 +242,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
   if(p(Trace)){
     //printf("Metamem(%d).inputLink = %d\n", io.opAddr, Metamem.read(io.opAddr).inputLink)
     //printf("Metamem(%d).pId = %d\n", io.opAddr, Metamem.read(io.opAddr).pId)
-    printf("io.rData = %d\n", io.rData)
-    //printf("io.interruptPost = %d\n", io.interruptPost)
+    printf("[RTA]io.rData = %d\n", io.rData)
   }
 }
 
