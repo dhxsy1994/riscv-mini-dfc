@@ -114,15 +114,13 @@ class A_counterPart extends Module {
   printf("[INTPOST] counterPart.stimulate = %d\n", stimulate)
 }
 
-/*---------------------------------------------------------------------*/
-//Separated dfc_AIO imp
-
 //A table Meta
 class A_Meta extends Bundle {
   val inputLink = UInt(8.W)
   val pId = UInt(16.W)
 }
 
+//Separated dfc_A IO imp
 class dfc_AIO extends Bundle {
   val wEn = Input(Bool())
   val wData = Input(UInt(32.W))
@@ -155,8 +153,6 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
   lastcounterDownEn := io.counterDownEn
   val lastcounterDownAddr = RegInit(0.U)
   lastcounterDownAddr := io.counterDownAddr
-
-  //There have two type addr, but A_counterPart only receive one type addr
 
   //Outputs init, if not, compile will report not fully initialized error
   io.rData := 0.U
