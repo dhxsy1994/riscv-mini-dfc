@@ -205,28 +205,70 @@ trait TestUtils {
   val dfcTest = List(
     //write TableA Data = 0x03080010 in reg(5)
     U(Opcode.LUI, 5, 12416),     // LUI x5, 0x03080  # x5 <- 0x03080000
-    I(Funct3.ADD, 6,  5,  16),   // ADDI x6, x5, 16  # x6 <- 0x03080 + 0x010
-    I(Funct3.ADD, 5, 6, 0),      // ADDI x5, x6, 0   # MOV x5 <- x6
+    I(Funct3.ADD, 5,  5,  16),   // ADDI x5, x5, 16  # x5 <- 0x03080000 + 0x010
+
     //write TableA Addr = 0x12 in reg(6)
     I(Funct3.ADD, 6, 0,  12),    // ADDI x6, x0, 9   # x6 <- 12
     DFCTW(Funct3.TWA, 5, 6),     // TWA x5, x6       # rs1 = wData, rs2 = waddr
     nop,
-    //write TableD_addr Data = 0x46403377
+
+    //write TableD 1
+    //write TableD_addr Data = 0x46403377 in reg(7)
     U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
-    I(Funct3.ADD, 8, 7, 887),    // ADDI x8, x7, 16  # x5 <- 0x46403 + 0x377
-    I(Funct3.ADD, 7, 8, 0),      // ADDI x7, x8, 0   # MOV x7 <- x8
+    I(Funct3.ADD, 7, 7, 887),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x377
+
     //write TableD_addr Addr = 0x8 in reg(8)
-    I(Funct3.ADD, 8, 0, 8),      // ADDI, x8, x0, 8  # x8 <- 8
+    I(Funct3.ADD, 8, 0, 8),      // ADDI, x8, x0, 8  # x8 <- 0x8
     DFCTW(Funct3.TWD_AD, 7, 8),  // TWD_AD x7, x8    # rs1 = wData, rs2 = waddr
     nop,
-    //write TableD_info Data = 0x0000024C
+
+    //write TableD_info Data = 0x0000024C in reg(9)
     U(Opcode.LUI, 9, 0),         // LUI x9, 0x0      # x9 <- 0x0
-    I(Funct3.ADD, 10, 9, 588),   // ADDI x10, x9,588 # x10 <- 0x00000000 + 0x24C
-    I(Funct3.ADD, 9, 10, 0),     // ADDI x9, x10, 0  # MOV x9 <- x10
-    //write TableD_info Addr = 0x9 in reg(10)
-    I(Funct3.ADD, 10, 0, 9),     // ADDI x10, x0, 9  # x10 <- 0x9
-    DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x19
+    I(Funct3.ADD, 9, 9, 588),   // ADDI x9, x9,588 # x9 <- 0x00000000 + 0x24C
+
+    //write TableD_info Addr = 0x8 in reg(10)
+    I(Funct3.ADD, 10, 0, 8),     // ADDI x10, x0, 8  # x10 <- 0x8
+    DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x10 # rs1 = wData, rs2 = waddr
     nop,
+
+    //wirte TableD 2
+    //write TableD_addr Data = 0x46403378 in reg(7)
+    U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
+    I(Funct3.ADD, 7, 7, 888),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x378
+
+    //write TableD_addr Addr = 0x9 in reg(8)
+    I(Funct3.ADD, 8, 0, 9),      // ADDI, x8, x0, 8  # x8 <- 0x9
+    DFCTW(Funct3.TWD_AD, 7, 8),  // TWD_AD x7, x8    # rs1 = wData, rs2 = waddr
+    nop,
+
+    //write TableD_info Data = 0x0000028C in reg(9)
+    U(Opcode.LUI, 9, 0),         // LUI x9, 0x0      # x9 <- 0x0
+    I(Funct3.ADD, 9, 9, 652),   // ADDI x9, x9, 652 # x9 <- 0x00000000 + 0x28C
+
+    //write TableD_info Addr = 0x9 in reg(10)
+    I(Funct3.ADD, 10, 0, 9),     // ADDI x10, x0, 8  # x10 <- 0x8
+    DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x10 # rs1 = wData, rs2 = waddr
+    nop,
+
+    //write TableD 3
+    //write TableD_addr Data = 0x46403378 in reg(7)
+    U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
+    I(Funct3.ADD, 7, 7, 889),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x379
+
+    //write TableD_addr Addr = 0x10 in reg(8)
+    I(Funct3.ADD, 8, 0, 10),      // ADDI, x8, x0, 8  # x8 <- 0x10
+    DFCTW(Funct3.TWD_AD, 7, 8),  // TWD_AD x7, x8    # rs1 = wData, rs2 = waddr
+    nop,
+
+    //write TableD_info Data = 0x0000000C in reg(9)
+    U(Opcode.LUI, 9, 0),         // LUI x9, 0x0      # x9 <- 0x0
+    I(Funct3.ADD, 9, 9, 12),   // ADDI x9, x9, 12 # x9 <- 0x00000000 + 0x00C
+
+    //write TableD_info Addr = 0x10 in reg(10)
+    I(Funct3.ADD, 10, 0, 10),     // ADDI x10, x0, 8  # x10 <- 0x8
+    DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x10 # rs1 = wData, rs2 = waddr
+    nop,
+
     I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
     fin
   )
