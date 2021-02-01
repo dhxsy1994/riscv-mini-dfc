@@ -250,7 +250,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
 
   when(!io.stall) {
     when(io.expt) {
-      mepc   := io.pc >> 2 << 2 //这是什么操作？
+      mepc   := io.pc >> 2 << 2 //epc最低两位置0，手册规定
       mcause := Mux(iaddrInvalid, Cause.InstAddrMisaligned,
                 Mux(laddrInvalid, Cause.LoadAddrMisaligned,
                 Mux(saddrInvalid, Cause.StoreAddrMisaligned,
