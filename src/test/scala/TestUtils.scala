@@ -269,6 +269,11 @@ trait TestUtils {
     DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x10 # rs1 = wData, rs2 = waddr
     nop,
 
+    //memory acess
+    S(Funct3.SW, 100, 0 ,1178612599),    // SW   x1, x0, 12  # Mem[1178612599] <- 100
+    S(Funct3.SW, 100, 0 ,1178612600),     // SW   x1, x0, 12  # Mem[1178612600] <- 100
+    S(Funct3.SW, 100, 0 ,1178612601),     // SW   x1, x0, 12  # Mem[1178612601] <- 100
+
     I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
     fin
   )
