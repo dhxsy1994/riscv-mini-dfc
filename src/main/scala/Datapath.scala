@@ -200,7 +200,8 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   real_DfcTile.io.opAddr_A  := rs2
   real_DfcTile.io.opAddr_D  := rs2
 
-  //listenaddr
+  //listenaddr = memory access
+  //TODO: distinguish read and write signal
   real_DfcTile.io.listenAddr := daddr
   //----------------DFC extension----------------//
 
