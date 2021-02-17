@@ -201,8 +201,9 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   real_DfcTile.io.opAddr_D  := rs2
 
   //listenaddr = memory access
-  //TODO: distinguish read and write signal
-  real_DfcTile.io.listenAddr := daddr
+  //TODO: verify memory access, the dfcTile may need add the judgement of wrong address
+  real_DfcTile.io.listenAddr := Mux(st_type === ST_SW || st_type === ST_SH || st_type === ST_SB, daddr, 0.U)
+
   //----------------DFC extension----------------//
 
   //trace 打印指令和pc，以及往寄存器文件写入的内容
