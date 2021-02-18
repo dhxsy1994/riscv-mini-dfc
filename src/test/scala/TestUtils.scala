@@ -213,9 +213,9 @@ trait TestUtils {
     nop,
 
     //write TableD 1
-    //write TableD_addr Data = 0x46403377 in reg(7)
+    //write TableD_addr Data = 0x46403308 in reg(7)
     U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
-    I(Funct3.ADD, 7, 7, 887),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x377
+    I(Funct3.ADD, 7, 7, 776),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x308
 
     //write TableD_addr Addr = 0x8 in reg(8)
     I(Funct3.ADD, 8, 0, 8),      // ADDI, x8, x0, 8  # x8 <- 0x8
@@ -232,9 +232,9 @@ trait TestUtils {
     nop,
 
     //wirte TableD 2
-    //write TableD_addr Data = 0x46403378 in reg(7)
+    //write TableD_addr Data = 0x46403328 in reg(7)
     U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
-    I(Funct3.ADD, 7, 7, 888),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x378
+    I(Funct3.ADD, 7, 7, 808),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x328
 
     //write TableD_addr Addr = 0x9 in reg(8)
     I(Funct3.ADD, 8, 0, 9),      // ADDI, x8, x0, 8  # x8 <- 0x9
@@ -251,9 +251,9 @@ trait TestUtils {
     nop,
 
     //write TableD 3
-    //write TableD_addr Data = 0x46403378 in reg(7)
+    //write TableD_addr Data = 0x46403348 in reg(7)
     U(Opcode.LUI, 7, 287747),    // LUI x7, 0x46403  # x7 <- 0x46403000
-    I(Funct3.ADD, 7, 7, 889),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x379
+    I(Funct3.ADD, 7, 7, 840),    // ADDI x7, x7, 16  # x7 <- 0x46403000 + 0x348
 
     //write TableD_addr Addr = 0x10 in reg(8)
     I(Funct3.ADD, 8, 0, 10),      // ADDI, x8, x0, 8  # x8 <- 0x10
@@ -270,9 +270,9 @@ trait TestUtils {
     nop,
 
     //memory acess
-    S(Funct3.SW, 100, 0 ,1178612599),    // SW   x1, x0, 12  # Mem[1178612599] <- 100
-    S(Funct3.SW, 100, 0 ,1178612600),     // SW   x1, x0, 12  # Mem[1178612600] <- 100
-    S(Funct3.SW, 100, 0 ,1178612601),     // SW   x1, x0, 12  # Mem[1178612601] <- 100
+    S(Funct3.SW, 100, 0, 1178612488),    // SW   x1, x0, 12  # Mem[1178612488] <- 100
+    S(Funct3.SW, 100, 0, 1178612520),     // SW   x1, x0, 12  # Mem[1178612520] <- 100
+    S(Funct3.SW, 100, 0, 1178612552),     // SW   x1, x0, 12  # Mem[1178612552] <- 100
 
     I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
     fin
