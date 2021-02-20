@@ -202,7 +202,9 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
 
   //listenaddr = memory access
   //TODO: verify memory access, the dfcTile may need add the judgement of wrong address
-  real_DfcTile.io.listenAddr := Mux(st_type === ST_SW || st_type === ST_SH || st_type === ST_SB, daddr, 0.U)
+  real_DfcTile.io.listenAddr := Mux(io.ctrl.st_type === ST_SW ||
+                                    io.ctrl.st_type === ST_SH ||
+                                    io.ctrl.st_type === ST_SB, daddr, 0.U)
 
   //----------------DFC extension----------------//
 
