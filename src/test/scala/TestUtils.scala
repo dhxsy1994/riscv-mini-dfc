@@ -275,7 +275,8 @@ trait TestUtils {
     S(Funct3.SW, 100, 11, 776),     // SW   x1, x0, 12  # Mem[0x46403308] <- 100
     S(Funct3.SW, 100, 11, 808),     // SW   x1, x0, 12  # Mem[0x46403328] <- 100
     S(Funct3.SW, 100, 11, 840),     // SW   x1, x0, 12  # Mem[0x46403348] <- 100
-
+    nop, nop,
+    
     I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
     fin
   )
