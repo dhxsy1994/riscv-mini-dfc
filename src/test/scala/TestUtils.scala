@@ -203,6 +203,8 @@ trait TestUtils {
     fin
   )
   val dfcTest = List(
+    I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Verify...
+
     //write TableA Data = 0x03080010 in reg(5)
     U(Opcode.LUI, 5, 12416),     // LUI x5, 0x03080  # x5 <- 0x03080000
     I(Funct3.ADD, 5,  5,  16),   // ADDI x5, x5, 16  # x5 <- 0x03080000 + 0x010
@@ -277,7 +279,7 @@ trait TestUtils {
     S(Funct3.SW, 100, 11, 840),     // SW   x1, x0, 12  # Mem[0x46403348] <- 100
     nop, nop,
     
-    I(Funct3.ADD, 31, 0, 1),     // ADDI x31, x0, 1  # x31 <- 0x1  For Finished Verify...
+    I(Funct3.ADD, 31, 0, 9),     // ADDI x31, x0, 9  # x31 <- 0x9
     fin
   )
   val tests = Map(
