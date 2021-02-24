@@ -168,6 +168,7 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   csr.io.pc_check := pc_check //这个影响有关需要地址的指令
   csr.io.ld_type  := ld_type
   csr.io.st_type  := st_type
+  csr.io.dfcEvent := false.B
   io.host <> csr.io.host 
 
   // Regfile Write
