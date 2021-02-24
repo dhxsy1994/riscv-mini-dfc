@@ -75,7 +75,8 @@ object Cause {
   val Breakpoint          = 0x3.U
   val LoadAddrMisaligned  = 0x4.U
   val StoreAddrMisaligned = 0x6.U
-  val Ecall               = 0x8.U //从U-mode环境调用
+  val Ecall               = 0x8.U // 从U-mode环境调用
+  val DfcEvent            = 0xc.U // DFC extension
 }
 
 class CSRIO(implicit p: Parameters)  extends CoreBundle()(p) {
@@ -98,6 +99,8 @@ class CSRIO(implicit p: Parameters)  extends CoreBundle()(p) {
   val epc      = Output(UInt(xlen.W))
   // HTIF
   val host = new HostIO
+  // DFC extension
+  val dfcEvent = Input(Bool())
 }
 
 class CSR(implicit val p: Parameters) extends Module with CoreParams {
@@ -232,10 +235,12 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val saddrInvalid = MuxLookup(io.st_type, false.B, Seq(
     Control.ST_SW -> io.addr(1, 0).orR,
     Control.ST_SH -> io.addr(0)))
-  //发生例外情况
+  // DFC extension
+  val isdfcEventIn = io.dfcEvent
+  // 例外发生
   io.expt := io.illegal || iaddrInvalid || laddrInvalid || saddrInvalid ||
              io.cmd(1, 0).orR && (!csrValid || !privValid) || wen && csrRO || 
-             (privInst && !privValid) || isEcall || isEbreak
+             (privInst && !privValid) || isEcall || isEbreak || isdfcEventIn
   io.evec := mtvec + (PRV << 6) //指令集规定，mtvec + PRV*0x40
   io.epc  := mepc //机器异常程序计数器
 
@@ -255,7 +260,8 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
                 Mux(laddrInvalid, Cause.LoadAddrMisaligned,
                 Mux(saddrInvalid, Cause.StoreAddrMisaligned,
                 Mux(isEcall,      Cause.Ecall + PRV,
-                Mux(isEbreak,     Cause.Breakpoint, Cause.IllegalInst)))))
+                Mux(isEbreak,     Cause.Breakpoint,
+                Mux(isdfcEventIn, Cause.DfcEvent, Cause.IllegalInst))))))
       PRV  := CSR.PRV_M
       IE   := false.B
       PRV1 := PRV
@@ -267,6 +273,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
       PRV1 := CSR.PRV_U
       IE1  := true.B
     }.elsewhen(wen) {
+      // write csr regs
       when(csr_addr === CSR.mstatus) { 
         PRV1 := wdata(5, 4)
         IE1  := wdata(3)

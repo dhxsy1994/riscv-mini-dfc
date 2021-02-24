@@ -269,7 +269,7 @@ trait TestUtils {
     DFCTW(Funct3.TWD_IF, 9, 10), // TWD_IF x9, x10 # rs1 = wData, rs2 = waddr
     nop,
 
-    //memory access, using store inst, addr src + pos
+    //memory access, using store inst, target addr = src + offset
     U(Opcode.LUI, 11, 287747),  // LUI x11, 0x46403  # x11 <- 0x46403000
 
     S(Funct3.SW, 100, 11, 776),     // SW   x1, x0, 12  # Mem[0x46403308] <- 100
