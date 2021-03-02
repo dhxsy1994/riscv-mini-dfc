@@ -273,10 +273,10 @@ trait TestUtils {
 
     //memory access, using store inst, target addr = src + offset
     U(Opcode.LUI, 11, 287747),  // LUI x11, 0x46403  # x11 <- 0x46403000
-
-    S(Funct3.SW, 100, 11, 776),     // SW   x1, x0, 12  # Mem[0x46403308] <- 100
-    S(Funct3.SW, 100, 11, 808),     // SW   x1, x0, 12  # Mem[0x46403328] <- 100
-    S(Funct3.SW, 100, 11, 840),     // SW   x1, x0, 12  # Mem[0x46403348] <- 100
+    I(Funct3.ADD, 12, 0, 100),  // ADDI x1, x0, 1   # x1 <- 1
+    S(Funct3.SW, 12, 11, 776),     // SW   x12, x11, 776  # Mem[0x46403308] <- 100
+    S(Funct3.SW, 12, 11, 808),     // SW   x12, x11, 808  # Mem[0x46403328] <- 100
+    S(Funct3.SW, 12, 11, 840),     // SW   x12, x11, 12  # Mem[0x46403348] <- 100
     nop, nop,
     
     I(Funct3.ADD, 31, 0, 9),     // ADDI x31, x0, 9  # x31 <- 0x9
