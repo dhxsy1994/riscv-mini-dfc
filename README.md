@@ -17,7 +17,7 @@ It is developed as an intermediate example before diving into [rocket-chip](http
 
 
 ## Datapath Diagram
-![pipeline](pipleline-modified.png)
+![pipeline](pipeline-modified.png)
 
 ## Getting Started
 
