@@ -59,13 +59,15 @@ object CSR {
   // Machine Host-Target interface
   val mtohost   = 0x780.U(12.W)
   val mfromhost = 0x781.U(12.W)
+  //DFC extension for interrupt process
+  val dfcintPID = 0x800.U(12.W)
 
   val regs = List(
     cycle, time, instret, cycleh, timeh, instreth,
     cyclew, timew, instretw, cyclehw, timehw, instrethw,
     mcpuid, mimpid, mhartid, mtvec, mtdeleg, mie,
     mtimecmp, mtime, mtimeh, mscratch, mepc, mcause, mbadaddr, mip,
-    mtohost, mfromhost, mstatus)
+    mtohost, mfromhost, mstatus, dfcintPID)
 }
 
 //exception 代码，可扩展
@@ -101,6 +103,7 @@ class CSRIO(implicit p: Parameters)  extends CoreBundle()(p) {
   val host = new HostIO
   // DFC extension
   val dfcEvent = Input(Bool())
+  val dfcRdata = Input(UInt(16.W))
 }
 
 class CSR(implicit val p: Parameters) extends Module with CoreParams {
@@ -117,7 +120,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val instret  = RegInit(0.U(xlen.W))
   val instreth = RegInit(0.U(xlen.W))
 
-  //标志cpu实现位和扩展位，开头00为RV32I
+  // 标志cpu实现位和扩展位，开头00为RV32I
   val mcpuid  = Cat(0.U(2.W) /* RV32I */, 0.U((xlen-28).W),
                     (1 << ('I' - 'A') /* Base ISA */| 
                      1 << ('U' - 'A') /* User Mode */).U(26.W))
@@ -150,7 +153,6 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   val MTIP = RegInit(false.B)
   val HTIP = false.B
   val STIP = false.B
-  //使能 定时器
   val MTIE = RegInit(false.B)
   val HTIE = false.B
   val STIE = false.B
@@ -178,6 +180,8 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
   when(io.host.fromhost.valid) {
     mfromhost := io.host.fromhost.bits
   }
+  //  DFC extension
+  val dfcintPID = RegInit(UInt(xlen.W))
 
   val csrFile = Seq(
     BitPat(CSR.cycle)     -> cycle,
@@ -208,7 +212,8 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
     BitPat(CSR.mip)       -> mip,
     BitPat(CSR.mtohost)   -> mtohost,
     BitPat(CSR.mfromhost) -> mfromhost,
-    BitPat(CSR.mstatus)   -> mstatus
+    BitPat(CSR.mstatus)   -> mstatus,
+    BitPat(CSR.dfcintPID) -> dfcintPID
   )
   //查找对应的csr_addr的csrFile中的内容
   io.out := Lookup(csr_addr, 0.U, csrFile).asUInt
@@ -237,6 +242,11 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
     Control.ST_SH -> io.addr(0)))
   // DFC extension
   val isdfcEventIn = io.dfcEvent
+  // write intrrupt PID
+  when(isdfcEventIn && io.dfcRdata.orR()) {
+    dfcintPID := io.dfcRdata
+  }
+
   // 例外发生
   io.expt := io.illegal || iaddrInvalid || laddrInvalid || saddrInvalid ||
              io.cmd(1, 0).orR && (!csrValid || !privValid) || wen && csrRO || 

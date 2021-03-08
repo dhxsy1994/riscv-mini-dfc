@@ -201,6 +201,9 @@ class Datapath(implicit val p: Parameters) extends Module with CoreParams {
   real_DfcTile.io.opAddr_A  := rs2
   real_DfcTile.io.opAddr_D  := rs2
 
+  //interrupt
+  csr.io.dfcRdata := real_DfcTile.io.rData
+
   //listenaddr = memory access
   //TODO: verify memory access, the dfcTile may need add the judgement of wrong address
   real_DfcTile.io.listenAddr := Mux(io.ctrl.st_type === ST_SW ||
