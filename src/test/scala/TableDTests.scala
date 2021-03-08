@@ -41,7 +41,7 @@ class WaveformTester_dfc_D (dut: dfc_D) extends PeekPokeTester(dut){
 class WaveformSpec_dfc_D extends FlatSpec with Matchers {
   "WaveformSpec_Test_dfc_D" should "pass" in {
     implicit val p = (new MiniConfig).toInstance
-    Driver.execute(Array("--generate-vcd-output", "on"), () => new dfc_D){
+    Driver.execute(Array("-tbn", "verilator"), () => new dfc_D){
       c => new WaveformTester_dfc_D(c)
     } should be (true)
   }
