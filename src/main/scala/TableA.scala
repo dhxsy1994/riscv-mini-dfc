@@ -196,9 +196,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
   //write A table
   when(lastwEn && !valid(lastopAddr)) {
     //write Meta
-    printf("[WTA](id: %d).inputLink = %d\n", lastopAddr, winputLink)
-    printf("[WTA](id: %d).pId = %d\n", lastopAddr, wpId)
-    printf("[WTA](id: %d).count = %d\n", lastopAddr, wCount)
+    printf("[WTA](id: %d) inputLink = %d, pId = %d, count = %d\n", lastopAddr, winputLink, wpId, wCount)
     Metamem.write(addr_wire, wMeta)
 
     //write Counterneed load, dIn
