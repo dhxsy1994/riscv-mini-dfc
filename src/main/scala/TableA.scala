@@ -111,7 +111,7 @@ class A_counterPart extends Module {
   io.interruptSignal := stimulate
   io.equalZeroAddr := equalZeroAddr
 
-  printf("[INTPOST] counterPart.stimulate = %d\n", stimulate)
+  printf("[CNT]counterPart.stimulate = %d\n", stimulate)
 }
 
 //A table Meta
@@ -209,10 +209,6 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
     valid := valid.bitSet(addr_wire, true.B)
   }
 
-  /*  when count = 0, countDown operation cause interrupt
-     TODO: interrupt operation define
-   */
-
   //counterPart addr select
   when(lastcounterDownEn && !lastwEn){
     counterPart.io.operationAddr := lastcounterDownAddr
@@ -226,13 +222,15 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
 
   //sync with counterPart.interruptSignal
   when(counterPartInterrupt_wire) {
-    printf("[APOST] One line of TableA had been set ZERO\n")
+    printf("[POST]One line of TableA had been set ZERO, Interrupt!\n")
     io.interruptPost := true.B
+    // when Interrupt post, DFC transfer TableA pid info to outside
+    io.rData := Metamem(counterPart.io.equalZeroAddr).pId
+    // set line valid to false
     valid := valid.bitSet(counterPart.io.equalZeroAddr, false.B)
   }
 
-  //read rData, only read Metamem.pId info, read Data without condition
-  io.rData := Metamem(io.opAddr).pId
+  //uncovered port
   io.equalZeroAddr := counterPart.io.equalZeroAddr
 
   if(p(Trace)){

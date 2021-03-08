@@ -144,7 +144,7 @@ class dfc_D (implicit val p: Parameters) extends Module with CoreParams {
   for(i <- 0 to 255){
     when(lastlistenAddr === addrMetaMem(i.asUInt()).listenAddr &&
       addrMeta_valid(i) && infoMeta_valid(i)) {
-      printf("[Hit] TableD listenAddr Hit\n")
+      printf("[Hit]TableD listenAddr Hit\n")
       io.counterDownAddr := infoMetaMem(i.asUInt()).TableAId
       io.counterDownEn := true.B
       listenHitAddr := i.asUInt()
