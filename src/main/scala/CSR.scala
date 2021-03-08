@@ -181,7 +181,7 @@ class CSR(implicit val p: Parameters) extends Module with CoreParams {
     mfromhost := io.host.fromhost.bits
   }
   //  DFC extension
-  val dfcintPID = RegInit(UInt(xlen.W))
+  val dfcintPID = RegInit(0.U(xlen.W))
 
   val csrFile = Seq(
     BitPat(CSR.cycle)     -> cycle,
