@@ -42,9 +42,9 @@ val commonSettings = Seq(
 crossScalaVersions := Seq("2.12.4", "2.11.12")
 
 val miniSettings = commonSettings ++ Seq(
-  name := "riscv-mini",
-  version := "2.0",
-  organization := "edu.berkeley.cs")
+  name := "riscv-mini-dfc",
+  version := "1.0",
+  organization := "SKT-CPUOS")
 
 lazy val lib  = project settings commonSettings
 lazy val mini = project in file(".") settings miniSettings dependsOn lib
