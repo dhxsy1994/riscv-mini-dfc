@@ -45,7 +45,7 @@ class dfc_D (implicit val p: Parameters) extends Module with CoreParams {
   io.counterDownEn := false.B
   io.counterDownAddr := 0.U
 
-  //buffered input regs
+  // TODO: cancle buffered input regs
   val lastwEnAddr = RegInit(false.B)
   lastwEnAddr := io.wEnAddr
   val lastwEnInfo = RegInit(false.B)
@@ -101,41 +101,6 @@ class dfc_D (implicit val p: Parameters) extends Module with CoreParams {
     infoMetaMem.write(addr_wire, winfoMeta)
     infoMeta_valid := infoMeta_valid.bitSet(addr_wire, true.B)
   }
-
-  /* not used
-  //condition judge wData type by wDataTail_orR
-  //Tail all 0 judge
-    true = type1
-    false = type2
-
-  val wDataTail_orR = io.wData(31, 14).orR()
-
-  //condition judge wData type by wDataTail_orR
-  when(wDataTail_orR === false.B){
-    //is type2
-    winfoMeta.LinkNext := io.wData(5, 0)
-    winfoMeta.TableAId := io.wData(13, 6)
-
-    waddrMeta.listenAddr := 0.U
-  }.elsewhen(wDataTail_orR === true.B){
-    //is type1
-    winfoMeta.LinkNext := 0.U
-    winfoMeta.TableAId := 0.U
-
-    waddrMeta.listenAddr := io.wData
-  }
-
-  //write addrMeta
-  when(io.wEn === true.B && wDataTail_orR === true.B && addrMeta_valid(addr_wire) === false.B){
-    addrMetaMem.write(addr_wire, waddrMeta)
-    addrMeta_valid := addrMeta_valid.bitSet(addr_wire, true.B)
-  }
-  //write infoMeta
-  when(io.wEn === true.B && wDataTail_orR === false.B && infoMeta_valid(addr_wire) === false.B){
-    infoMetaMem.write(addr_wire, winfoMeta)
-    infoMeta_valid := infoMeta_valid.bitSet(addr_wire, true.B)
-  }
-  */
 
   val listenHitAddr = Wire(UInt())
   listenHitAddr := 0.U

@@ -18,8 +18,8 @@ class DfcTileIO extends Bundle{
   val opAddr_A = Input(UInt(6.W))
   val opAddr_D = Input(UInt(8.W))
 
-  val rData = Output(UInt(32.W))
-  //TODO: A table need read data out, interrupt procession
+  // read TableA ready pId
+  val rData = Output(UInt(16.W))
 
   val listenAddr = Input(UInt(32.W))
   val interruptPost = Output(Bool())

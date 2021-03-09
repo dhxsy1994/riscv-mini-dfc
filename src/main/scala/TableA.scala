@@ -6,26 +6,6 @@ import chisel3.util._
 import junctions._
 import freechips.rocketchip.config.{Field, Parameters}
 
-/*
-A 表表示形式
-| 编号 | 有效           | 输入计数              | 输入数据链              | 线程号          |
-| ---- | -------------- | --------------------- | ----------------------- | --------------- |
-| 0    | 0无效 1有效 | 输入数据个数，递减到0 | 第一个输入数据的D表编号 | 数据流线程的PID |
-| 1    |                |                       |                         |                 |
-| 2    |                |                       |                         |                 |
-| …    |                |                       |                         |                 |
-|N=8bit|      1bit     |         10             |          10               |         16        |
-
-D表表示
-| 编号 | 有效           | 监听地址                     | 所属数据流任务编号 | 链接指针                                     |
-| ---- | -------------- | ---------------------------- | ------------------ | -------------------------------------------- |
-| 0    | 0，无效；1有效 | 数据流数据对象保存的地址范围 | 在A表中的编号      | 用于指出同一线程的其他输入数据，用编号构成链 |
-| 1    |                |                              |                    |                                              |
-| 2    |                |                              |                    |                                              |
-| …    |                |                              |                    |                                              |
-|M=10bit|    1bit        |            32+32                  |      8         |      32                                    |
- */
-
 
 class A_counterPart extends Module {
   //counter 部件
@@ -46,7 +26,7 @@ class A_counterPart extends Module {
   //valid Reg
   val valid = RegInit(0.U(64.W))
 
-  //buffered input regs
+  // TODO: cancle buffered input regs
   val lastoperationAddr = RegInit(0.U)
   lastoperationAddr := io.operationAddr
   val lastcountDownEn = RegInit(false.B)
@@ -142,7 +122,7 @@ class dfc_A(implicit val p: Parameters) extends Module with CoreParams {
 
   val io = IO(new dfc_AIO)
 
-  //buffered input regs
+  // TODO: cancle buffered input regs
   val lastwEn = RegInit(false.B)
   lastwEn := io.wEn
   val lastwData = RegInit(0.U)
