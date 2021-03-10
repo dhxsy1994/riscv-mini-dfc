@@ -61,7 +61,7 @@ class DfcTile(implicit val p: Parameters) extends Module with CoreParams {
   TableA.io.counterDownAddr <> TableD.io.counterDownAddr
 
   if(p(Trace)){
-    printf("[INTPOST] DFC.interrupt = %d\n", io.interruptPost)
+    printf("[DFCPOST]DFC.interrupt = %d\n", io.interruptPost)
   }
 }
 
