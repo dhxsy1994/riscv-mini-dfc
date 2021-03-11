@@ -70,7 +70,7 @@ class DatapathTester(datapath: => Datapath,
 
 class DatapathTests extends org.scalatest.FlatSpec {
   implicit val p = (new MiniConfig).toInstance
-  Seq(BypassTest, ExceptionTest, DfcTest) foreach { test =>
+  Seq(BypassTest, ExceptionTest, DfcTest, InstGenTest) foreach { test =>
     "Datapath" should s"pass $test" in {
       assert(TesterDriver execute (() => new DatapathTester(new Datapath, test)))
     }
