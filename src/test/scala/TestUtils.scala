@@ -21,6 +21,10 @@ object DfcTest extends DatapathTest{
   override def toString: String = "dfc test"
 }
 
+object InstGenTest extends DatapathTest{
+  override def toString: String = "dfc InstGen test"
+}
+
 
 trait TestUtils {
   implicit def boolToBoolean(x: Bool) = x.litValue() == 1
@@ -282,14 +286,28 @@ trait TestUtils {
     I(Funct3.ADD, 31, 0, 9),     // ADDI x31, x0, 9  # x31 <- 0x9
     fin
   )
+  val instGenTest = List(
+    // mv t0, a0  # t0 = x5 as waddr
+    // mv t1, a1  # t1 = x6 as wData
+    
+    DFCTW(Funct3.TWA, 6, 5), // TWA x6, x5     # rs1 = wData, rs2 = waddr
+    DFCTW(Funct3.TWD_AD, 6, 5), // TWD_AD x6, x5     # rs1 = wData, rs2 = waddr
+    DFCTW(Funct3.TWD_IF, 6, 5), // TWA_IF x6, x5     # rs1 = wData, rs2 = waddr
+
+    I(Funct3.ADD, 31, 0, 9), // ADDI x31, x0, 9  # x31 <- 0x9
+    fin
+  )
+
   val tests = Map(
     BypassTest    -> bypassTest,
     ExceptionTest -> exceptionTest,
-    DfcTest -> dfcTest)
+    DfcTest -> dfcTest,
+    InstGenTest -> instGenTest)
   val testResults = Map(
     BypassTest    -> 10,
     ExceptionTest -> 4,
-    DfcTest -> 1                 // For Finished Verify...
+    DfcTest -> 1,
+    InstGenTest -> 9 // For Finished Verify...
   )
 }
 
