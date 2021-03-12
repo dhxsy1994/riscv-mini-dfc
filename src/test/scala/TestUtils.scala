@@ -20,7 +20,6 @@ object ExceptionTest extends DatapathTest {
 object DfcTest extends DatapathTest{
   override def toString: String = "dfc test"
 }
-
 object InstGenTest extends DatapathTest{
   override def toString: String = "dfc InstGen test"
 }
