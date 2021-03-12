@@ -13,7 +13,7 @@ Unlike other simple pipelines, it also contains simple instruction and data cach
 Note that a real-world processor is not the goal of `riscv-mini-dfc`.
 This repo is a extension of DFC runtime env. The goal is to demo a fast way to reduce Thread context switching.
 
-It is developed as an intermediate example before diving into [rocket-chip](https://github.com/freechipsproject/rocket-chip). 
+Next, this repo will diving into [rocket-chip](https://github.com/freechipsproject/rocket-chip) to implement a powerful processor. 
 
 
 ## Datapath Diagram
@@ -67,15 +67,15 @@ Finally, to run all the tests, just in sbt:
 
     > test
     
-## Running Your Own Program on `riscv-mini`
+## Running Data Flow Program on `riscv-mini-dfc`
 
-At this point, you may want to implement and exeucte your custom application on `riscv-mini`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
+At this point, you may want to implement and exeucte your custom application on `riscv-mini-dfc`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
 
     $ export RISCV=<path to riscv tools for priv 1.7>
     $ ./build-riscv-tools
     
-It takes a while to install the toolchain, so please be patient.
+It takes a while to install the toolchain, so please be patient, and you should install verilator with 3.886 version, otherwise may encounter errors.
 
-This repo also provides a template for your own program in `custom-bmark`. Add your c or assembly code and edit `Makefile`. Next, to compile you program, run `make` in `custom-bmark` to generate the binary, dump, and the hex files. Finally, run the following command in the base directory:
+This DataFlow program in `custom-bmark`. To compile program, run `make` in `custom-bmark` to generate the binary, dump, and the hex files. Finally, run the following command in the base directory:
 
     $ make run-custom-bmark
