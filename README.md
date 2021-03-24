@@ -48,7 +48,7 @@ The following command runs the whole test hex files in verilator and dumps the t
 ## Unit and Integration Tests with `sbt`
 
 `riscv-mini` provides synthesizable unit & integration tests.
-Theres are six sets of unit tests(`ALUTests`, `BrCondTests`, `ImmGenTests`, `CSRTests`, `CacheTests`, `DatapathTests`),
+Theres have some unit tests(`ALUTests`, `BrCondTests`, `ImmGenTests`, `CSRTests`, `CacheTests`, `DatapathTests`, `TableATests`,`TableDTests`, `DFCTileTests`),
 running user-defined test vectors.
 To execute them, first launch sbt with `make sbt` and run:
 
