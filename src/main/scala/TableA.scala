@@ -68,7 +68,7 @@ class A_counterPart extends Module {
   currentCount := counterMeta.read(lastoperationAddr)
 
   //countDownEn arrive judge next time = curreentCount - 1
-  when(valid(lastoperationAddr) && lastcountDownEn){
+  when(lastcountDownEn && valid(lastoperationAddr)){
     equalZero := currentCount - 1.U === 0.U
   }.otherwise{
     equalZero := false.B
