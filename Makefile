@@ -4,6 +4,8 @@ base_dir   = $(abspath .)
 src_dir    = $(base_dir)/src/main
 gen_dir    = $(base_dir)/generated-src
 out_dir    = $(base_dir)/outputs
+dfc_out_dir = $(base_dir)/dfc-outputs
+fpga_out_dir = $(base_dir)/fpga-outputs
 
 SBT       = sbt
 SBT_FLAGS = -ivy $(base_dir)/.ivy2
@@ -40,6 +42,7 @@ $(test_out_files): $(out_dir)/%.out: $(base_dir)/VTile $(base_dir)/src/test/reso
 
 run-tests: $(test_out_files)
 
+
 # run custom benchamrk
 custom_bmark_hex ?= $(base_dir)/custom-bmark/main.hex
 custom_bmark_out  = $(patsubst %.hex,%.out,$(out_dir)/$(notdir $(custom_bmark_hex)))
@@ -51,13 +54,37 @@ $(custom_bmark_out): $(base_dir)/VTile $(custom_bmark_hex)
 	$^ $(patsubst %.out,%.vcd,$@) 2> $@
 
 run-custom-bmark: $(custom_bmark_out) 
-	
+
+# run dfc_bmark
+dfc_bmark_hex ?= $(base_dir)/dfc-bmark/main.hex
+dfc_bmark_out  = $(patsubst %.hex,%.out,$(dfc_out_dir)/$(notdir $(dfc_bmark_hex)))
+$(dfc_bmark_hex):
+	$(MAKE) -C dfc_bmark
+
+$(dfc_bmark_out): $(base_dir)/VTile $(dfc_bmark_hex)
+	mkdir -p $(dfc_out_dir)
+	$^ $(patsubst %.out,%.vcd,$@) 2> $@
+
+run-dfc-bmark: $(dfc_bmark_out) 
+
+# run bmark for fpga tests with loop interrupts
+fpga_bmark_hex ?= $(base_dir)/fpga-bmark/main.hex
+fpga_bmark_out  = $(patsubst %.hex,%.out,$(fpga_out_dir)/$(notdir $(fpga_bmark_hex)))
+$(fpga_bmark_hex):
+	$(MAKE) -C fpga-bmark
+
+$(fpga_bmark_out): $(base_dir)/VTile $(fpga_bmark_hex)
+	mkdir -p $(fpga_out_dir)
+	$^ $(patsubst %.out,%.vcd,$@) 2> $@
+
+run-fpga-bmark: $(fpga_bmark_out) 
+
 # unit tests + integration tests 
 test:
 	$(SBT) $(SBT_FLAGS) test
 
 clean:
-	rm -rf $(gen_dir) $(out_dir) test_run_dir
+	rm -rf $(gen_dir) $(out_dir) $(dfc_out_dir) $(fpga_out_dir) test_run_dir
 
 cleanall: clean
 	rm -rf target project/target
