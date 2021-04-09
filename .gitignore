@@ -1,5 +1,5 @@
 generated-src
-outputs
+*outputs
 test_run_dir
 target
 project/target
