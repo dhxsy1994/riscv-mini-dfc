@@ -56,10 +56,13 @@ class A_counterPart extends Module {
   }
 
   when(lastcountDownEn && valid(lastoperationAddr)){
+    next := currentCount - 1.U
     counterMeta.write(lastoperationAddr, next)
   }.elsewhen(lastcountDownEn && !valid(lastoperationAddr)){
     printf("[FATAL] Failed signals, countDownEn = %d, valid = %d\n", lastcountDownEn, valid(lastoperationAddr))
-  }
+    }.otherwise{
+      next := 0.U
+    }
 
   //read from mem with operationAddr
   currentCount := counterMeta.read(lastoperationAddr)
