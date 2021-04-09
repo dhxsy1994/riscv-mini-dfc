@@ -67,15 +67,19 @@ Finally, to run all the tests, just in sbt:
 
     > test
     
-## Running Data Flow Program on `riscv-mini-dfc`
+## Running DataFlow Program on `riscv-mini-dfc`
 
-At this point, you may want to implement and exeucte your custom application on `riscv-mini-dfc`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
+you can execute the data flow application on `riscv-mini-dfc`. In this case, you need to install RISC-V tools for priv 1.7. This repo provides a script to install the correct version of tools. Run the script as follows:
 
     $ export RISCV=<path to riscv tools for priv 1.7>
     $ ./build-riscv-tools
     
 It takes a while to install the toolchain, so please be patient, and you should install verilator with 3.886 version, otherwise may encounter errors.
 
-This DataFlow program in `custom-bmark`. To compile program, run `make` in `custom-bmark` to generate the binary, dump, and the hex files. Finally, run the following command in the base directory:
+This DataFlow program and syscall in `dfc-bmark`, more detail please see `dfc-bmark/README.md`. To compile program, run `make` in `dfc-bmark` to generate the binary, dump, and the hex files and waveform. Finally, run the following command in the base directory:
 
-    $ make run-custom-bmark
+    $ make run-dfc-bmark
+    
+Also we have a version for DataFlow program running on FPGA, You can monit a continual expt singal. Run the following command in the base directory:
+
+    $ make run-fpga-bmark
