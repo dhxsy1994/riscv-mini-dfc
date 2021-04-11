@@ -1,12 +1,11 @@
 # riscv-mini-dfc
 
-Author: Hessen Du (258414420@qq.com)  Donggyu Kim (dgkim@eecs.berkeley.edu)
+Author: Hessen Du (258414420@qq.com)
 
 Owner: SKT-CPUOS
 
-`riscv-mini-dfc` is a simple RISC-V 3-stage pipeline written in Chisel. It has been a crucial example in various project developments,
-including [Chisel3](https://github.com/ucb-bar/chisel3.git), [FIRRTL](https://github.com/ucb-bar/firrtl.git),
-[Strober](https://bar.eecs.berkeley.edu/projects/strober.html), simulation and verification methodologies.
+`riscv-mini-dfc` is a branch development from [riscv-mini](https://github.com/ucb-bar/riscv-mini).
+
 It implements RV32I of the User-level ISA Version 2.0 and the Machine-level ISA of the Privileged Architecture Version 1.7.
 Unlike other simple pipelines, it also contains simple instruction and data caches.
 
